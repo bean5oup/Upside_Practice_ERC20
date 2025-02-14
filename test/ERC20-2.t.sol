@@ -48,7 +48,8 @@ contract UpsideTokenTest is Test {
         assertEq(upside_token.nonces(alice), 1);
     }
 
-    function testFailExpiredPermit() public {
+    // function testFailExpiredPermit() public {
+    function test_RevertWhen_ExpiredPermit() public {
         bytes32 hash = keccak256(abi.encode(
             keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"), 
             alice, 
@@ -62,10 +63,12 @@ contract UpsideTokenTest is Test {
 
         vm.warp(1 days + 1 seconds);
 
+        vm.expectRevert();
         upside_token.permit(alice, address(this), 10 ether, 1 days, v, r, s);
     }
 
-    function testFailInvalidSigner() public {
+    // function testFailInvalidSigner() public {
+    function test_RevertWhen_InvalidSigner() public {
         bytes32 hash = keccak256(abi.encode(
             keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"), 
             alice, 
@@ -77,10 +80,12 @@ contract UpsideTokenTest is Test {
         bytes32 digest = upside_token._toTypedDataHash(hash);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(bobPK, digest);
 
+        vm.expectRevert();
         upside_token.permit(alice, address(this), 10 ether, 1 days, v, r, s);
     }
 
-    function testFailInvalidNonce() public {
+    // function testFailInvalidNonce() public {
+    function test_RevertWhen_InvalidNonce() public {
         bytes32 hash = keccak256(abi.encode(
             keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"), 
             alice, 
@@ -92,6 +97,7 @@ contract UpsideTokenTest is Test {
         bytes32 digest = upside_token._toTypedDataHash(hash);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(alicePK, digest);
 
+        vm.expectRevert();
         upside_token.permit(alice, address(this), 10 ether, 1 days, v, r, s);
     }
 

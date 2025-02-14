@@ -17,21 +17,27 @@ contract UpsideTokenTest is Test {
         upside_token.transfer(bob, 50 ether);
     }
     
-    function testFailPauseNotOwner() public {
+    // function testFailPauseNotOwner() public {
+    function test_RevertWhen_PauseNotOwner() public {
         vm.prank(alice);
+        vm.expectRevert();
         upside_token.pause();
     }
 
-    function testFailTransfer() public {
+    // function testFailTransfer() public {
+    function test_RevertWhen_Transfer() public {
         upside_token.pause();
         vm.prank(alice);
+        vm.expectRevert();
         upside_token.transfer(bob, 10 ether);
     }
 
-    function testFailTransferFrom() public {
+    // function testFailTransferFrom() public {
+    function test_RevertWhen_TransferFrom() public {
         upside_token.pause();
         vm.prank(alice);
         upside_token.approve(msg.sender, 10 ether);
+        vm.expectRevert();
         upside_token.transferFrom(alice, bob, 10 ether);
     }
 }
